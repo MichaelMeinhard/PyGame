@@ -1,14 +1,18 @@
 import pygame
 from classes.hero import *
+from classes.slash import *
 
 pygame.init()
 
 bg_img = pygame.image.load("images/background.jpg")
 bg = pygame.transform.scale(bg_img,(1280, 720))
 
+
 def draw_game():
     win.blit(bg, (0,0))
     player.draw(win)
+    for slash in player.slashes:
+        slash.draw()
     pygame.time.delay(30)
     pygame.display.update()
 
