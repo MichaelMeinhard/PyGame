@@ -9,15 +9,13 @@ win_width = 1280
 win = pygame.display.set_mode((win_width, win_height))
 
 # Image's Load
-left = [None]*10
-for picIndex in range(1,10):
-    left[picIndex-1] = pygame.image.load(os.path.join("hero", "L" + str(picIndex) + ".png"))
-    picIndex+=1
+left = [None] * 9
+for picIndex in range(0, 9):
+    left[picIndex] = pygame.image.load(os.path.join("hero", "L" + str(picIndex + 1) + ".png"))
 
-right = [None]*10
-for picIndex in range(1,10):
-    right[picIndex-1] = pygame.image.load(os.path.join("hero", "R" + str(picIndex) + ".png"))
-    picIndex+=1
+right = [None] * 9
+for picIndex in range(0, 9):
+    right[picIndex] = pygame.image.load(os.path.join("hero", "R" + str(picIndex + 1) + ".png"))
 
 
 class Hero:
@@ -30,6 +28,8 @@ class Hero:
         self.face_right = True
         self.face_left = False
         self.stepIndex = 0
+        self.max_health = 100
+        self.health = 100
         # Jump
         self.jump = False
         # Slash
@@ -50,6 +50,7 @@ class Hero:
 
     # Portayal of the hero
     def draw(self, win):
+        # Movement
         if self.stepIndex >= 9:
             self.stepIndex = 0
         if self.face_left:
@@ -59,12 +60,17 @@ class Hero:
             win.blit(right[self.stepIndex], (self.x, self.y))
             self.stepIndex += 1
 
-    # Jump motion
+        # Health
+        pygame.draw.rect(win, (0, 0, 0), (self.x + 11, self.y - 1, 35, 12))
+        pygame.draw.rect(win, (255 - ((self.health / self.max_health) * 255), (self.health / self.max_health) * 255, 0),
+                         (self.x + 12, self.y, 33, 10))
+
+    # Jump
     def jump_motion(self, userInput):
         if userInput[pygame.K_UP] and self.jump is False:
             self.jump = True
         if self.jump:
-            self.y -= self.vel_y*4
+            self.y -= self.vel_y * 4
             self.vel_y -= 1
         if self.vel_y < -10:
             self.jump = False
@@ -72,4 +78,13 @@ class Hero:
 
     def slash(self, userInput):
         if userInput[pygame.K_SPACE]:
-            slash = Slash(self.x, self.y)
+            if len(self.slashes) == 0:
+                slash = Slash(self.x + 15, self.y + 5, self.face_left)
+                self.slashes.append(slash)
+            elif self.slashes[len(self.slashes) - 1].time > 5:
+                slash = Slash(self.x + 15, self.y + 5, self.face_left)
+                self.slashes.append(slash)
+
+    def damage(self, enemy):
+        if enemy.x - 15 < self.x < enemy.x + 15 and enemy.y - 20 < self.y < enemy.y:
+            self.health -= 5
