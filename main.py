@@ -12,7 +12,7 @@ bg = pygame.transform.scale(bg_img, (1280, 720))
 def draw_game():
     win.blit(bg, (0,0))
     player.draw(win)
-    for i ,slh in enumerate(player.slashes):
+    for slh in player.slashes:
         if slh.shouldDelete:
             player.slashes.remove(slh)
 
@@ -47,6 +47,11 @@ while run:
     for enemy in enemies:
         enemy.move()
         player.damage(enemy)
+    for enemy in enemies:
+        if enemy.to_delete:
+            enemies.remove(enemy)
+        for sl in player.slashes:
+            enemy.damage(sl)
         if enemy.off_screen():
             enemies.remove(enemy)
 

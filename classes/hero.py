@@ -28,21 +28,28 @@ class Hero:
         self.face_right = True
         self.face_left = False
         self.stepIndex = 0
+        # Health
         self.max_health = 100
         self.health = 100
         # Jump
         self.jump = False
         # Slash
         self.slashes = []
+        # Delete
+        self.to_delete = False
 
     # Hero's movement
     def move_hero(self, userInput):
         if userInput[pygame.K_RIGHT] and self.x <= win_width - 62:
             self.x += self.vel_x
+            for sl in self.slashes:
+                sl.x += self.vel_x
             self.face_right = True
             self.face_left = False
         elif userInput[pygame.K_LEFT] and self.x >= 0:
             self.x -= self.vel_x
+            for sl in self.slashes:
+                sl.x -= self.vel_x
             self.face_right = False
             self.face_left = True
         else:
@@ -62,8 +69,9 @@ class Hero:
 
         # Health
         pygame.draw.rect(win, (0, 0, 0), (self.x + 11, self.y - 1, 35, 12))
-        pygame.draw.rect(win, (255 - ((self.health / self.max_health) * 255), (self.health / self.max_health) * 255, 0),
-                         (self.x + 12, self.y, 33, 10))
+        if self.health >= 0:
+            pygame.draw.rect(win, (255 - ((self.health / self.max_health) * 255), (self.health / self.max_health) *
+                                   255, 0), (self.x + 12, self.y, (self.health / self.max_health) * 33, 10))
 
     # Jump
     def jump_motion(self, userInput):
@@ -72,7 +80,11 @@ class Hero:
         if self.jump:
             self.y -= self.vel_y * 4
             self.vel_y -= 1
+            for sl in self.slashes:
+                sl.y -= self.vel_y * 4
         if self.vel_y < -10:
+            for sl in self.slashes:
+                sl.y += self.vel_y * 4
             self.jump = False
             self.vel_y = 10
 
@@ -87,4 +99,4 @@ class Hero:
 
     def damage(self, enemy):
         if enemy.x - 15 < self.x < enemy.x + 15 and enemy.y - 20 < self.y < enemy.y:
-            self.health -= 5
+            self.health -= 1
