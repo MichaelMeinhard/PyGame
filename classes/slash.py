@@ -1,13 +1,7 @@
 import pygame
 import os
 import math
-
-# Settings
-win_height = 720
-win_width = 1280
-win = pygame.display.set_mode((win_width, win_height))
-
-slash_speed = 2
+from classes.settings import *
 
 # Image's Load
 slash = [None] * 6

@@ -2,11 +2,7 @@ import pygame
 import os
 
 from classes.slash import Slash
-
-# Settings
-win_height = 720
-win_width = 1280
-win = pygame.display.set_mode((win_width, win_height))
+from classes.settings import *
 
 # Image's Load
 left = [None] * 9
@@ -23,7 +19,7 @@ class Hero:
         # Walk
         self.x = x
         self.y = y
-        self.vel_x = 10
+        self.vel_x = 13
         self.vel_y = 10
         self.face_right = True
         self.face_left = False
@@ -100,3 +96,7 @@ class Hero:
     def damage(self, enemy):
         if enemy.x - 15 < self.x < enemy.x + 15 and enemy.y - 20 < self.y < enemy.y:
             self.health -= 1
+
+    def game_over(self):
+        if self.health <= 0:
+            return True
