@@ -8,10 +8,9 @@ from classes.waves import Fu
 pygame.init()
 
 
-def end(userInput, text_score, textRect_score):
+def end(userInput):
     win.fill((0, 0, 0))
     win.blit(text_end, textRect)
-    win.blit(text_score, textRect_score)
     if userInput[pygame.K_r]:
         return True
 
@@ -37,11 +36,8 @@ def draw_game(userInput):
 
     # Waves
     text_wave = font.render('Wave: ' + str(wavee.wave), True, (0, 0, 0))
-    text_score = font.render('Your wave: ' + str(wavee.wave), True, (255, 255, 255))
     textRect_wave = text_wave.get_rect()
-    textRect_score = text_score.get_rect()
     textRect_wave.center = (win_width // 2, 100)
-    textRect_score.center = (win_width // 2, win_height // 2 + 40 )
     win.blit(text_wave, textRect_wave)
 
     pygame.time.delay(30)
